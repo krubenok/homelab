@@ -1,0 +1,46 @@
+version: "3.8"
+
+# Reference: https://www.omgthecloud.com/plex-containerized-with-nfs-mounts/
+
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    runtime: nvidia
+    restart: unless-stopped
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    environment:
+      - TZ=America/Los_Angeles
+      - ADVERTISE_IP=http://10.1.1.14:32400/
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    hostname: 10.1.1.14
+    volumes:
+      - /home/appdata/plex:/config
+      - /dev/shm:/transcode
+      - /mnt/Soul/TV:/media/TV
+      - /mnt/Mind/Movies:/media/Movies
+      - /mnt/Power/Appdata/Plex-DB-Backups:/database-backups
+
+  tautulli:
+    container_name: tautulli
+    image: linuxserver/tautulli
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/tautulli:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
+    depends_on:
+      - plex

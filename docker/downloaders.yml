@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    restart: unless-stopped
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/sonarr:/config
+      - /mnt/Soul/TV:/media/TV
+      - /mnt/Power/Scratch/Downloads:/Downloads
+    depends_on:
+      - sabnzbd
+      - jackett
+      - transmission-openvpn
+
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr
+    restart: unless-stopped
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/radarr:/config
+      - /mnt/Mind/Movies:/media/Movies
+      - /mnt/Power/Scratch/Downloads:/Downloads
+    depends_on:
+      - sabnzbd
+      - jackett
+      - transmission-openvpn
+
+  jackett:
+    container_name: jackett
+    image: linuxserver/jackett
+    restart: unless-stopped
+    ports:
+      - 9117:9117
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/jackett:/config
+      - /mnt/Power/Scratch/Watch/Transmission:/downloads
+
+  sabnzbd:
+    container_name: sabnzbd
+    image: linuxserver/sabnzbd
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 9090:9090
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/sabnzbd:/config
+      - /mnt/Power/Scratch/Downloads/Sabnzbd/Complete:/Downloads/Complete
+      - /mnt/Power/Scratch/Downloads/Sabnzbd/Incompelte:/Downloads/Incomplete
+      - /mnt/Power/Scratch/Watch/NZB:/Watch
+
+  transmission-openvpn:
+    container_name: transmission-openvpn
+    image: haugene/transmission-openvpn
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
+    environment:
+      - OPENVPN_PROVIDER=PRIVADO
+      - OPENVPN_CONFIG=sea-001
+      - OPENVPN_USERNAME=${PRIVADOUSER}
+      - OPENVPN_PASSWORD=${PRIVADOPASS}
+      - LOCAL_NETWORK=10.1.0.0/16
+    volumes:
+      - /mnt/Power/Scratch/Downloads/Transmission/Complete:/Downloads/Complete
+      - /mnt/Power/Scratch/Downloads/Transmission/Incompelte:/Downloads/Incomplete
+      - /mnt/Power/Scratch/Watch/Transmission:/Watch
+      - /home/appdata/sabnzbd:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    cap_add:
+      - NET_ADMIN

@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  homebridge:
+    container_name: homebridge
+    image: oznu/homebridge:ubuntu
+    restart: always
+    network_mode: host
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - HOMEBRIDGE_CONFIG_UI=1
+      - HOMEBRIDGE_CONFIG_UI_PORT=8222
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/appdata/homebridge:/homebridge
