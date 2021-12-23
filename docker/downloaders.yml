@@ -1,5 +1,9 @@
 version: "3.8"
 
+# Config Variables
+# PRIVADOUSER -- username for privadoVPN
+# PRIVADOPASS -- password for privadoVPN
+
 services:
   sonarr:
     container_name: sonarr
