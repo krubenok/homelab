@@ -9,11 +9,11 @@ services:
     privileged: true
     image: ido1990/tailscale-docker:latest
     environment:
-      - "AUTHKEY=tskey-ko7gN53CNTRL-dQc8WdPJfHVM7t8zejQsf"
-      - "ROUTES=10.1.1.0/24"
+      - "AUTHKEY={TAILSCALEKEY}"
+      - "ROUTES=10.2.0.0/24"
     networks:
       private_lan:
-        ipv4_address: 10.1.1.4
+        ipv4_address: 10.2.0.4
 
   cloudflared:
     container_name: cloudflared
@@ -44,7 +44,7 @@ services:
       - "WEBPASSWORD=admin"
 
       # IP Address Pihole is assigned on private_lan network
-      - "ServerIP=10.1.1.2"
+      - "ServerIP=10.2.0.2"
 
       - "DNSSEC=true"
 
@@ -70,7 +70,7 @@ services:
       internal:
         ipv4_address: 172.30.9.3
       private_lan:
-        ipv4_address: 10.1.1.2
+        ipv4_address: 10.2.0.2
 
     # Starts cloudflard before Pi-hole
     depends_on:
