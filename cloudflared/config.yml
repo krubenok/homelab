@@ -1,0 +1,25 @@
+tunnel: dd810fa3-ab49-405c-84ea-7b408c3b189e
+credentials-file: /etc/cloudflared/dd810fa3-ab49-405c-84ea-7b408c3b189e.json
+
+ingress:
+  - hostname: sonarr.rubenok.ca
+    service: http://10.1.1.14:8989
+  - hostname: radarr.rubenok.ca
+    service: http://10.1.1.14:7878
+  - hostname: transmission.rubenok.ca
+    service: http://10.1.1.14:9091
+  - hostname: sabnzbd.rubenok.ca
+    service: http://10.1.1.14:8080
+  - hostname: portainer.rubenok.ca
+    service: http://10.1.1.14:9000
+  - hostname: jackett.rubenok.ca
+    service: http://10.1.1.14:9117
+  - hostname: tautulli.rubenok.ca
+    service: http://10.1.1.14:8181
+  - hostname: freenas.rubenok.ca
+    service: http://10.1.1.11
+  - hostname: esxi.rubenok.ca
+    service: http://10.1.1.10
+  - hostname: pihole.rubenok.ca
+    service: http://10.1.1.2
+  - service: http_status:404

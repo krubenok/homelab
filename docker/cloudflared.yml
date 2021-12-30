@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  cloudflared:
+    container_name: cloudflared
+    # Restart on crashes and on reboots
+    restart: unless-stopped
+    image: cloudflare/cloudflared:2021.12.4
+    volumes:
+      - /home/appdata/cloudflared:/etc/cloudflared/
+    command: "tunnel --config /etc/cloudflared/config.yml run"
