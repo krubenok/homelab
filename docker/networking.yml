@@ -9,7 +9,7 @@ services:
     privileged: true
     image: ido1990/tailscale-docker:latest
     environment:
-      - "AUTHKEY=tskey-ko7gN53CNTRL-dQc8WdPJfHVM7t8zejQsf"
+      - "AUTHKEY=${TAILSCALEAUTHKEY}"
       - "ROUTES=10.1.1.0/24"
     networks:
       private_lan:
