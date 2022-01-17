@@ -13,4 +13,15 @@ services:
       - HOMEBRIDGE_CONFIG_UI_PORT=8222
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/homebridge:/homebridge
+  scrypted:
+    image: koush/scrypted:latest
+    container_name: scrypted
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /home/appdata/scrypted:/etc/scrypted/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
