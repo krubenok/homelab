@@ -13,6 +13,7 @@ services:
       - HOMEBRIDGE_CONFIG_UI_PORT=8222
       - TZ=America/Los_Angeles
     volumes:
+      - /home/appdata/homebridge:/homebridge
   scrypted:
     image: koush/scrypted:latest
     container_name: scrypted
