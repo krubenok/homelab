@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   cloudflared:
-    container_name: cloudflared
+    container_name: cloudflared-access
     # Restart on crashes and on reboots
     restart: unless-stopped
     image: cloudflare/cloudflared:2021.12.4
