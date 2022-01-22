@@ -7,5 +7,5 @@ services:
     restart: unless-stopped
     image: cloudflare/cloudflared:2021.12.4
     volumes:
-      - /home/jarvis/appdata/cloudflared:/etc/cloudflared/
+      - /home/jarvis/homelab/cloudflared:/etc/cloudflared/
     command: "tunnel --config /etc/cloudflared/config.yml run"
