@@ -97,3 +97,14 @@ services:
         max-size: 10m
     cap_add:
       - NET_ADMIN
+
+  gaps:
+    container_name: gaps
+    image: housewrecker/gaps:latest
+    restart: unless-stopped
+    ports:
+      - "8484:8484"
+    expose:
+      - "32400"
+    volumes:
+      - /home/media/appdata/gaps:/usr/data

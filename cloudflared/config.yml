@@ -18,8 +18,8 @@ ingress:
     service: http://10.1.1.14:8181
   - hostname: homebridge.rubenok.ca
     service: http://10.1.1.14:8222
-  - hostname: scrypted.rubenok.ca
-    service: http://10.1.1.14:10443
+  - hostname: gaps.rubenok.ca
+    service: http://10.1.1.14:8484
   - hostname: freenas.rubenok.ca
     service: http://10.1.1.11
   - hostname: esxi.rubenok.ca
