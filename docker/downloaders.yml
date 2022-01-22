@@ -16,7 +16,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/sonarr:/config
+      - /home/media/appdata/sonarr:/config
       - /mnt/Soul/TV:/media/TV
       - /mnt/Power/Scratch/Downloads:/Downloads
     depends_on:
@@ -35,7 +35,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/radarr:/config
+      - /home/media/appdata/radarr:/config
       - /mnt/Mind/Movies:/media/Movies
       - /mnt/Power/Scratch/Downloads:/Downloads
     depends_on:
@@ -54,7 +54,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/jackett:/config
+      - /home/media/appdata/jackett:/config
       - /mnt/Power/Scratch/Watch/Transmission:/downloads
 
   sabnzbd:
@@ -69,7 +69,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/sabnzbd:/config
+      - /home/media/appdata/sabnzbd:/config
       - /mnt/Power/Scratch/Downloads/Sabnzbd/Complete:/Downloads/Complete
       - /mnt/Power/Scratch/Downloads/Sabnzbd/Incompelte:/Downloads/Incomplete
       - /mnt/Power/Scratch/Watch/NZB:/Watch
@@ -90,7 +90,7 @@ services:
       - /mnt/Power/Scratch/Downloads/Transmission/Complete:/Downloads/Complete
       - /mnt/Power/Scratch/Downloads/Transmission/Incompelte:/Downloads/Incomplete
       - /mnt/Power/Scratch/Watch/Transmission:/Watch
-      - /home/appdata/sabnzbd:/data
+      - /home/media/appdata/sabnzbd:/data
     logging:
       driver: json-file
       options:

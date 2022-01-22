@@ -6,7 +6,7 @@ services:
   plex:
     container_name: plex
     image: plexinc/pms-docker
-    runtime: nvidia
+    #runtime: nvidia
     restart: unless-stopped
     ports:
       - 32400:32400/tcp
@@ -25,7 +25,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     hostname: 10.1.1.14
     volumes:
-      - /home/appdata/plex:/config
+      - /home/media/appdata/plex:/config
       - /dev/shm:/transcode
       - /mnt/Soul/TV:/media/TV
       - /mnt/Mind/Movies:/media/Movies
@@ -39,7 +39,7 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - /home/appdata/tautulli:/config
+      - /home/media/appdata/tautulli:/config
     ports:
       - 8181:8181
     restart: unless-stopped
