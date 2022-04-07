@@ -100,7 +100,7 @@ services:
 
   gaps:
     container_name: gaps
-    image: housewrecker/gaps:latest
+    image: housewrecker/gaps
     restart: unless-stopped
     ports:
       - "8484:8484"
