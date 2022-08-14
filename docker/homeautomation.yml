@@ -15,7 +15,7 @@ services:
     volumes:
       - /home/media/appdata/homebridge:/homebridge
   scrypted:
-    image: koush/scrypted
+    image: koush/scrypted:latest
     container_name: scrypted
     restart: unless-stopped
     network_mode: host

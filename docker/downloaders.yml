@@ -19,10 +19,6 @@ services:
       - /home/media/appdata/sonarr:/config
       - /mnt/Soul/TV:/media/TV
       - /mnt/Power/Scratch/Downloads:/Downloads
-    depends_on:
-      - sabnzbd
-      - jackett
-      - transmission-openvpn
 
   radarr:
     container_name: radarr
@@ -36,7 +32,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /home/media/appdata/radarr:/config
-      - /mnt/Mind/Movies:/media/Movies
+      - /mnt/Time/Movies:/media/Movies
       - /mnt/Power/Scratch/Downloads:/Downloads
     depends_on:
       - sabnzbd
@@ -71,7 +67,7 @@ services:
     volumes:
       - /home/media/appdata/sabnzbd:/config
       - /mnt/Power/Scratch/Downloads/Sabnzbd/Complete:/Downloads/Complete
-      - /mnt/Power/Scratch/Downloads/Sabnzbd/Incompelte:/Downloads/Incomplete
+      - /mnt/Power/Scratch/Downloads/Sabnzbd/Incomplete:/Downloads/Incomplete
       - /mnt/Power/Scratch/Watch/NZB:/Watch
 
   transmission-openvpn:
@@ -100,7 +96,7 @@ services:
 
   gaps:
     container_name: gaps
-    image: housewrecker/gaps
+    image: housewrecker/gaps:latest
     restart: unless-stopped
     ports:
       - "8484:8484"
@@ -108,3 +104,15 @@ services:
       - "32400"
     volumes:
       - /home/media/appdata/gaps:/usr/data
+
+  recyclarr:
+    container_name: recyclarr
+    image: ghcr.io/recyclarr/recyclarr:latest
+    init: true
+    user: 1000:1000
+    restart: unless-stopped
+    volumes:
+      - /home/media/appdata/recyclarr:/config
+    depends_on:
+      - sonarr
+      - radarr
