@@ -86,7 +86,7 @@ services:
       - /mnt/Power/Scratch/Downloads/Transmission/Complete:/Downloads/Complete
       - /mnt/Power/Scratch/Downloads/Transmission/Incompelte:/Downloads/Incomplete
       - /mnt/Power/Scratch/Watch/Transmission:/Watch
-      - /home/media/appdata/sabnzbd:/data
+      - /mnt/Power/Scratch/Downloads/Transmission:/data
     logging:
       driver: json-file
       options:
@@ -108,7 +108,6 @@ services:
   recyclarr:
     container_name: recyclarr
     image: ghcr.io/recyclarr/recyclarr:latest
-    init: true
     user: 1000:1000
     restart: unless-stopped
     volumes:
