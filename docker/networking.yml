@@ -15,66 +15,36 @@ services:
       private_lan:
         ipv4_address: 10.1.1.4
 
-  cloudflared:
-    container_name: cloudflared
-    # Restart on crashes and on reboots
-    restart: unless-stopped
-    image: cloudflare/cloudflared
-    command: proxy-dns
-    environment:
-      - "TUNNEL_DNS_UPSTREAM=https://1.1.1.1/dns-query,https://1.0.0.1/dns-query,https://9.9.9.9/dns-query,https://149.112.112.9/dns-query"
-
-      # Listen on an unprivileged port
-      - "TUNNEL_DNS_PORT=5053"
-
-      # Listen on all interfaces
-      - "TUNNEL_DNS_ADDRESS=0.0.0.0"
-
-    # Attach cloudflared only to the private network
-    networks:
-      internal:
-        ipv4_address: 172.30.9.2
-
   pihole:
     container_name: pihole
-    restart: unless-stopped
-    image: pihole/pihole
+    image: cbcrowe/pihole-unbound:latest
+    hostname: 10.1.1.2
+    domainname: pihole.local
+    ports:
+      - 443:443/tcp
+      - 53:53/tcp
+      - 53:53/udp
+      - 80:80/tcp #Allows use of different port to access pihole web interface when other docker containers use port 80
+      # - 5335:5335/tcp # Uncomment to enable unbound access on local server
+      # - 22/tcp # Uncomment to enable SSH
     environment:
-      - "TZ=America/Los_Angeles"
-      - "WEBPASSWORD=admin"
-
-      # IP Address Pihole is assigned on private_lan network
-      - "ServerIP=10.1.1.2"
-
-      - "DNSSEC=true"
-
-      # Internal IP of the cloudflared container
-      - "DNS1=172.30.9.2#5053"
-
-      # Explicitly disable a second DNS server, otherwise Pi-hole uses Google
-      - "DNS2=no"
-
-      # Listen on all interfaces and permit all origins
-      # This allows Pihole to work in this setup and when answering across VLANS,
-      # but do not expose pi-hole to the internet!
-      - "DNSMASQ_LISTENING=all"
-
-    # Persist data and custom configuration to the host's storage
+      - FTLCONF_LOCAL_IPV4=10.1.1.2
+      - TZ=America/Los_Angeles
+      - WEBTHEME="default-auto"
+      - REV_SERVER="false"
+      - REV_SERVER_TARGET="false"
+      - REV_SERVER_DOMAIN="local"
+      - REV_SERVER_CIDR=10.0.0.0/8
+      - PIHOLE_DNS_=127.0.0.1#5335
+      - DNSSEC="true"
+      - DNSMASQ_LISTENING=single
     volumes:
-      - "/mnt/appdata/pihole/config:/etc/pihole/"
-      - "/mnt/appdata/pihole/dnsmasq:/etc/dnsmasq.d/"
-
-    # 1. Join the internal network so Pi-hole can talk to cloudflared
-    # 2. Join the public network so it's reachable by systems on our LAN
+      - etc_pihole-unbound:/etc/pihole:rw
+      - etc_pihole_dnsmasq-unbound:/etc/dnsmasq.d:rw
     networks:
-      internal:
-        ipv4_address: 172.30.9.3
       private_lan:
         ipv4_address: 10.1.1.2
-
-    # Starts cloudflard before Pi-hole
-    depends_on:
-      - cloudflared
+    restart: unless-stopped
 
 networks:
   # Create the internal network
@@ -87,3 +57,7 @@ networks:
   private_lan:
     external:
       name: private_lan
+
+volumes:
+  etc_pihole-unbound:
+  etc_pihole_dnsmasq-unbound:
