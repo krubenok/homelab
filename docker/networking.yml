@@ -36,7 +36,7 @@ services:
       - /home/jarvis/homelab/adguardhome:/opt/adguardhome/conf
     networks:
       private_lan:
-        ipv4_address: 10.1.1.5
+        ipv4_address: 10.1.1.2
     restart: unless-stopped
 
 networks:
