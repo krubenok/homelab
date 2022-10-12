@@ -24,8 +24,8 @@ ingress:
     service: http://10.1.1.11
   - hostname: esxi.rubenok.ca
     service: http://10.1.1.10
-  - hostname: pihole.rubenok.ca
-    service: http://10.1.1.2
+  - hostname: adguard.rubenok.ca
+    service: https://10.1.1.5
   - hostname: jarvis.rubenok.ca
     service: http://10.1.1.3:9000
   - service: http_status:404

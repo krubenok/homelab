@@ -5,7 +5,7 @@ services:
     container_name: cloudflared-access
     # Restart on crashes and on reboots
     restart: unless-stopped
-    image: cloudflare/cloudflared:2021.12.4
+    image: cloudflare/cloudflared:latest
     volumes:
       - /home/jarvis/homelab/cloudflared:/etc/cloudflared/
     command: "tunnel --config /etc/cloudflared/config.yml run"

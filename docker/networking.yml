@@ -1,13 +1,11 @@
 version: "3.8"
 
-# Reference: http://mroach.com/2020/08/pi-hole-and-cloudflared-with-docker/#option-2-attach-cloudflared-to-the-lan
-
 services:
   tailscale:
     container_name: tailscale
     restart: unless-stopped
     privileged: true
-    image: ido1990/tailscale-docker
+    image: ido1990/tailscale-docker:latest
     environment:
       - "AUTHKEY=${TAILSCALEAUTHKEY}"
       - "ROUTES=10.1.1.0/24"
@@ -15,49 +13,34 @@ services:
       private_lan:
         ipv4_address: 10.1.1.4
 
-  pihole:
-    container_name: pihole
-    image: cbcrowe/pihole-unbound:latest
-    hostname: 10.1.1.2
-    domainname: pihole.local
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
     ports:
-      - 443:443/tcp
       - 53:53/tcp
       - 53:53/udp
-      - 80:80/tcp #Allows use of different port to access pihole web interface when other docker containers use port 80
-      # - 5335:5335/tcp # Uncomment to enable unbound access on local server
-      # - 22/tcp # Uncomment to enable SSH
-    environment:
-      - FTLCONF_LOCAL_IPV4=10.1.1.2
-      - TZ=America/Los_Angeles
-      - WEBTHEME="default-auto"
-      - REV_SERVER="false"
-      - REV_SERVER_TARGET="false"
-      - REV_SERVER_DOMAIN="local"
-      - REV_SERVER_CIDR=10.0.0.0/8
-      - PIHOLE_DNS_=127.0.0.1#5335
-      - DNSSEC="true"
-      - DNSMASQ_LISTENING=single
+      - 67:67/udp
+      - 68:68/udp
+      - 80:80/tcp
+      - 443:443/tcp
+      - 443:443/udp
+      - 3000:3000/tcp
+      - 853:853/tcp
+      - 784:784/udp
+      - 853:853/udp
+      - 8853:8853/udp
+      - 5443:5443/tcp
+      - 5443:5443/udp
     volumes:
-      - etc_pihole-unbound:/etc/pihole:rw
-      - etc_pihole_dnsmasq-unbound:/etc/dnsmasq.d:rw
+      - /home/jarvis/homelab/adguardhome:/opt/adguardhome/work
+      - /home/jarvis/homelab/adguardhome:/opt/adguardhome/conf
     networks:
       private_lan:
-        ipv4_address: 10.1.1.2
+        ipv4_address: 10.1.1.5
     restart: unless-stopped
 
 networks:
-  # Create the internal network
-  internal:
-    ipam:
-      config:
-        - subnet: 172.30.9.0/29
-
   # The priv_lan network is already setup, so it is an 'external' network
   private_lan:
     external:
       name: private_lan
-
-volumes:
-  etc_pihole-unbound:
-  etc_pihole_dnsmasq-unbound:
