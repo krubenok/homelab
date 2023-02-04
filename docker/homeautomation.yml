@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /home/media/appdata/scrypted:/etc/scrypted/
+      - /home/media/appdata/scrypted:/server/volume/
     logging:
       driver: "json-file"
       options:
