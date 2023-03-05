@@ -17,7 +17,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /home/media/appdata/sonarr:/config
-      - /mnt/Soul/TV:/media/TV
+      - /mnt/TV:/media/TV
       - /mnt/Reality/Scratch/Downloads:/Downloads
 
   radarr:
