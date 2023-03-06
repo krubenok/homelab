@@ -32,7 +32,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /home/media/appdata/radarr:/config
-      - /mnt/Time/Movies:/media/Movies
+      - /mnt/Movies:/media/Movies
       - /mnt/Reality/Scratch/Downloads:/Downloads
     depends_on:
       - sabnzbd

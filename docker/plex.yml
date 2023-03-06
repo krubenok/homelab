@@ -28,7 +28,7 @@ services:
       - /home/media/appdata/plex:/config
       - /dev/shm:/transcode
       - /mnt/TV:/media/TV
-      - /mnt/Time/Movies:/media/Movies
+      - /mnt/Movies:/media/Movies
       - /mnt/Time/Music_Videos:/media/Music_Videos
       - /mnt/Reality/Appdata/Plex-DB-Backups:/database-backups
 
