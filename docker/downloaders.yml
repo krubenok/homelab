@@ -18,7 +18,7 @@ services:
     volumes:
       - /home/media/appdata/sonarr:/config
       - /mnt/TV:/media/TV
-      - /mnt/Reality/Scratch/Downloads:/Downloads
+      - /mnt/Scratch/Downloads:/Downloads
 
   radarr:
     container_name: radarr
@@ -33,7 +33,7 @@ services:
     volumes:
       - /home/media/appdata/radarr:/config
       - /mnt/Movies:/media/Movies
-      - /mnt/Reality/Scratch/Downloads:/Downloads
+      - /mnt/Scratch/Downloads:/Downloads
     depends_on:
       - sabnzbd
       - jackett
@@ -51,7 +51,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /home/media/appdata/jackett:/config
-      - /mnt/Reality/Scratch/Watch/Transmission:/downloads
+      - /mnt/Scratch/Watch/Transmission:/downloads
 
   sabnzbd:
     container_name: sabnzbd
@@ -66,9 +66,9 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - /home/media/appdata/sabnzbd:/config
-      - /mnt/Reality/Scratch/Downloads/Sabnzbd/Complete:/Downloads/Sabnzbd/Complete
-      - /mnt/Reality/Scratch/Downloads/Sabnzbd/Incomplete:/Downloads/Sabnzbd/Incomplete
-      - /mnt/Reality/Scratch/Watch/NZB:/Watch
+      - /mnt/Scratch/Downloads/Sabnzbd/Complete:/Downloads/Sabnzbd/Complete
+      - /mnt/Scratch/Downloads/Sabnzbd/Incomplete:/Downloads/Sabnzbd/Incomplete
+      - /mnt/Scratch/Watch/NZB:/Watch
 
   transmission-openvpn:
     container_name: transmission-openvpn
@@ -85,9 +85,9 @@ services:
       - TRANSMISSION_DOWNLOAD_DIR=/Downloads/Transmission/Complete
       - TRANSMISSION_INCOMPLETE_DIR=/Downloads/Transmission/Incomplete
     volumes:
-      - /mnt/Reality/Scratch/Downloads:/Downloads
-      - /mnt/Reality/Scratch/Watch/Transmission:/Watch
-      - /mnt/Reality/Scratch/Downloads/Transmission:/data
+      - /mnt/Scratch/Downloads:/Downloads
+      - /mnt/Scratch/Watch/Transmission:/Watch
+      - /mnt/Scratch/Downloads/Transmission:/data
     logging:
       driver: json-file
       options:

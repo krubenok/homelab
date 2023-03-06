@@ -30,7 +30,7 @@ services:
       - /mnt/TV:/media/TV
       - /mnt/Movies:/media/Movies
       - /mnt/Music_Videos:/media/Music_Videos
-      - /mnt/Reality/Appdata/Plex-DB-Backups:/database-backups
+      - /mnt/Scratch/Plex-DB-Backups:/database-backups
 
   tautulli:
     container_name: tautulli
