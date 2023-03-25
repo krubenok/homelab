@@ -32,7 +32,7 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - /home/media/appdata/influxdb-storage:/var/lib/influxdb
+      - influxdb-storage:/var/lib/influxdb
     environment:
       - PGID=1000
       - PUID=1000
@@ -50,7 +50,7 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - /home/media/appdata/chronograf-storage:/var/lib/chronograf
+      - chronograf-storage:/var/lib/chronograf
     depends_on:
       - influxdb
     environment:
@@ -65,7 +65,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /home/media/appdata/grafana-storage:/var/lib/grafana
+      - grafana-storage:/var/lib/grafana
     depends_on:
       - influxdb
     environment:
@@ -96,3 +96,8 @@ services:
       - UP_UNIFI_DEFAULT_URL=${UNIFI_URL}
       - UP_POLLER_DEBUG=${POLLER_DEBUG}
       - UP_UNIFI_DEFAULT_SAVE_DPI=${POLLER_SAVE_DPI}
+
+volumes:
+  influxdb-storage:
+  chronograf-storage:
+  grafana-storage:
