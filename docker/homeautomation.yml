@@ -25,6 +25,7 @@ services:
         max-size: "10m"
         max-file: "10"
   influxdb:
+    container_name: influxdb
     restart: always
     image: influxdb:2.5
     ports:
@@ -41,6 +42,7 @@ services:
       - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
   chronograf:
+    container_name: chronograf
     image: chronograf:latest
     restart: always
     ports:
@@ -54,6 +56,7 @@ services:
       - INFLUXDB_USERNAME=${INFLUXDB_ADMIN_USER}
       - INFLUXDB_PASSWORD=${INFLUXDB_ADMIN_PASSWORD}
   grafana:
+    container_name: grafana
     image: grafana/grafana:latest
     restart: always
     ports:
@@ -67,6 +70,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_INSTALL_PLUGINS=grafana-clock-panel,natel-discrete-panel,grafana-piechart-panel
   unifi-poller:
+    container_name: unpoller
     restart: always
     image: ghcr.io/unpoller/unpoller:${POLLER_TAG}
     depends_on:
