@@ -17,6 +17,7 @@ services:
       - "TS_AUTHKEY=${TAILSCALEAUTHKEY}"
       - "TS_ROUTES=10.1.1.2/32"
       - "TS_STATE_DIR=/var/lib/tailscale"
+      - "TS_HOSTNAME=jarvis-docker"
     networks:
       private_lan:
         ipv4_address: 10.1.1.4
