@@ -6,6 +6,13 @@ services:
     restart: unless-stopped
     privileged: true
     image: tailscale/tailscale:latest
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+      - /home/jarvis/homelab/tailscale/varlib:/var/lib/tailscale
+      # https://github.com/tailscale/tailscale/issues/6849
+      # add volume for the tailscaled.sock to be present on the host system
+      # that's where caddy goes to communicate with tailscale
+      - /home/jarvis/homelab/tailscale/tmp:/tmp
     environment:
       - "TS_AUTHKEY=${TAILSCALEAUTHKEY}"
       - "TS_ROUTES=10.1.1.2/32"
