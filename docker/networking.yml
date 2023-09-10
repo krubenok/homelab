@@ -9,6 +9,7 @@ services:
     environment:
       - "TS_AUTHKEY=${TAILSCALEAUTHKEY}"
       - "TS_ROUTES=10.1.1.2/32"
+      - TS_STATE_DIR=/var/lib/tailscale
     networks:
       private_lan:
         ipv4_address: 10.1.1.4
@@ -40,6 +41,7 @@ services:
     restart: unless-stopped
 
   watchtower:
+    container_name: watchtower
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
