@@ -53,6 +53,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
 
 networks:
   # The priv_lan network is already setup, so it is an 'external' network
