@@ -87,6 +87,11 @@ services:
       - UP_POLLER_DEBUG=${POLLER_DEBUG}
       - UP_UNIFI_DEFAULT_SAVE_DPI=${POLLER_SAVE_DPI}
 
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
 volumes:
   influxdb-storage:
   chronograf-storage:
