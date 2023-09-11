@@ -105,14 +105,30 @@ services:
       - "32400"
     volumes:
       - /home/media/appdata/gaps:/usr/data
-
-  recyclarr:
-    container_name: recyclarr
-    image: ghcr.io/recyclarr/recyclarr:latest
-    user: 1000:1000
+  
+  notifiarr:
+    container_name: notifiarr
+    hostname: notifiarr
+    image: golift/notifiarr
     restart: unless-stopped
+    privileged: true
+    ports:
+      - "5454:5454"
     volumes:
-      - /home/media/appdata/recyclarr:/config
-    depends_on:
-      - sonarr
-      - radarr
+      - /home/media/appdata/notifiarr:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id
+      - /mnt/TV:/media/TV
+      - /mnt/Movies:/media/Movies
+      - /mnt/Music_Videos:/media/Music_Videos
+
+  # recyclarr:
+  #   container_name: recyclarr
+  #   image: ghcr.io/recyclarr/recyclarr:latest
+  #   user: 1000:1000
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /home/media/appdata/recyclarr:/config
+  #   depends_on:
+  #     - sonarr
+  #     - radarr
