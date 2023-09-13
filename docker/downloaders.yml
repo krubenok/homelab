@@ -107,7 +107,7 @@ services:
       - /home/media/appdata/gaps:/usr/data
   
   notifiarr:
-    container_name: notifiarr\
+    container_name: notifiarr
     runtime: nvidia
     hostname: notifiarr
     image: golift/notifiarr
