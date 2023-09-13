@@ -107,11 +107,15 @@ services:
       - /home/media/appdata/gaps:/usr/data
   
   notifiarr:
-    container_name: notifiarr
+    container_name: notifiarr\
+    runtime: nvidia
     hostname: notifiarr
     image: golift/notifiarr
     restart: unless-stopped
     privileged: true
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     ports:
       - "5454:5454"
     volumes:
