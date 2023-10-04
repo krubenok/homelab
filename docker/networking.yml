@@ -1,52 +1,52 @@
 version: "3.8"
 
 services:
-  tailscale:
-    container_name: tailscale
-    restart: unless-stopped
-    privileged: true
-    image: tailscale/tailscale:latest
-    volumes:
-      - /dev/net/tun:/dev/net/tun
-      - /home/jarvis/homelab/tailscale/varlib:/var/lib/tailscale
-      # https://github.com/tailscale/tailscale/issues/6849
-      # add volume for the tailscaled.sock to be present on the host system
-      # that's where caddy goes to communicate with tailscale
-      - /home/jarvis/homelab/tailscale/tmp:/tmp
-    environment:
-      - "TS_AUTHKEY=${TAILSCALEAUTHKEY}"
-      - "TS_ROUTES=10.1.1.2/32"
-      - "TS_STATE_DIR=/var/lib/tailscale"
-      - "TS_HOSTNAME=jarvis-docker"
-    networks:
-      private_lan:
-        ipv4_address: 10.1.1.4
+  # tailscale:
+  #   container_name: tailscale
+  #   restart: unless-stopped
+  #   privileged: true
+  #   image: tailscale/tailscale:latest
+  #   volumes:
+  #     - /dev/net/tun:/dev/net/tun
+  #     - /home/jarvis/homelab/tailscale/varlib:/var/lib/tailscale
+  #     # https://github.com/tailscale/tailscale/issues/6849
+  #     # add volume for the tailscaled.sock to be present on the host system
+  #     # that's where caddy goes to communicate with tailscale
+  #     - /home/jarvis/homelab/tailscale/tmp:/tmp
+  #   environment:
+  #     - "TS_AUTHKEY=${TAILSCALEAUTHKEY}"
+  #     - "TS_ROUTES=10.1.1.2/32"
+  #     - "TS_STATE_DIR=/var/lib/tailscale"
+  #     - "TS_HOSTNAME=jarvis-docker"
+  #   networks:
+  #     private_lan:
+  #       ipv4_address: 10.1.1.4
 
-  adguardhome:
-    image: adguard/adguardhome:latest
-    container_name: adguardhome
-    ports:
-      - 53:53/tcp
-      - 53:53/udp
-      - 67:67/udp
-      - 68:68/udp
-      - 80:80/tcp
-      - 443:443/tcp
-      - 443:443/udp
-      - 3000:3000/tcp
-      - 853:853/tcp
-      - 784:784/udp
-      - 853:853/udp
-      - 8853:8853/udp
-      - 5443:5443/tcp
-      - 5443:5443/udp
-    volumes:
-      - /home/jarvis/homelab/adguardhome:/opt/adguardhome/work
-      - /home/jarvis/homelab/adguardhome:/opt/adguardhome/conf
-    networks:
-      private_lan:
-        ipv4_address: 10.1.1.2
-    restart: unless-stopped
+  # adguardhome:
+  #   image: adguard/adguardhome:latest
+  #   container_name: adguardhome
+  #   ports:
+  #     - 53:53/tcp
+  #     - 53:53/udp
+  #     - 67:67/udp
+  #     - 68:68/udp
+  #     - 80:80/tcp
+  #     - 443:443/tcp
+  #     - 443:443/udp
+  #     - 3000:3000/tcp
+  #     - 853:853/tcp
+  #     - 784:784/udp
+  #     - 853:853/udp
+  #     - 8853:8853/udp
+  #     - 5443:5443/tcp
+  #     - 5443:5443/udp
+  #   volumes:
+  #     - /home/jarvis/homelab/adguardhome:/opt/adguardhome/work
+  #     - /home/jarvis/homelab/adguardhome:/opt/adguardhome/conf
+  #   networks:
+  #     private_lan:
+  #       ipv4_address: 10.1.1.2
+  #   restart: unless-stopped
 
   watchtower:
     container_name: watchtower
