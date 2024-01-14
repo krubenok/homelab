@@ -26,7 +26,7 @@ services:
     hostname: 10.1.1.14
     volumes:
       - /home/media/appdata/plex:/config
-      - /dev/shm:/transcode
+      - /mnt/Scratch/Plex-Transcode:/transcode
       - /mnt/TV:/media/TV
       - /mnt/Movies:/media/Movies
       - /mnt/Music_Videos:/media/Music_Videos
