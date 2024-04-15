@@ -37,7 +37,7 @@ services:
     depends_on:
       - sabnzbd
       - jackett
-      - transmission-openvpn
+      - transmission
 
   jackett:
     container_name: jackett
@@ -70,41 +70,29 @@ services:
       - /mnt/Scratch/Downloads/Sabnzbd/Incomplete:/Downloads/Sabnzbd/Incomplete
       - /mnt/Scratch/Watch/NZB:/Watch
 
-  transmission-openvpn:
-    container_name: transmission-openvpn
-    image: haugene/transmission-openvpn
+  transmission:
+    container_name: transmission
+    image: linuxserver/transmission
     restart: unless-stopped
-    ports:
-      - "9091:9091"
     environment:
-      - OPENVPN_PROVIDER=PRIVADO
-      - OPENVPN_CONFIG=sea-001
-      - OPENVPN_USERNAME=${PRIVADOUSER}
-      - OPENVPN_PASSWORD=${PRIVADOPASS}
-      - LOCAL_NETWORK=10.1.0.0/16
-      - TRANSMISSION_DOWNLOAD_DIR=/Downloads/Transmission/Complete
-      - TRANSMISSION_INCOMPLETE_DIR=/Downloads/Transmission/Incomplete
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
     volumes:
-      - /mnt/Scratch/Downloads:/Downloads
-      - /mnt/Scratch/Watch/Transmission:/Watch
-      - /mnt/Scratch/Downloads/Transmission:/data
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
-    cap_add:
-      - NET_ADMIN
+      - /home/media/appdata/transmission:/config
+      - /mnt/Scratch/Downloads:/downloads
+      - /mnt/Scratch/Watch/Transmission:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
   
   notifiarr:
     container_name: notifiarr
-    runtime: nvidia
     hostname: notifiarr
     image: golift/notifiarr
     restart: unless-stopped
     privileged: true
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     ports:
       - "5454:5454"
     volumes:
