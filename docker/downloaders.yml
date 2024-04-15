@@ -1,9 +1,5 @@
 version: "2.4"
 
-# Config Variables
-# PRIVADOUSER -- username for privadoVPN
-# PRIVADOPASS -- password for privadoVPN
-
 services:
   sonarr:
     container_name: sonarr
@@ -102,14 +98,3 @@ services:
       - /mnt/TV:/media/TV
       - /mnt/Movies:/media/Movies
       - /mnt/Music_Videos:/media/Music_Videos
-
-  # recyclarr:
-  #   container_name: recyclarr
-  #   image: ghcr.io/recyclarr/recyclarr:latest
-  #   user: 1000:1000
-  #   restart: unless-stopped
-  #   volumes:
-  #     - /home/media/appdata/recyclarr:/config
-  #   depends_on:
-  #     - sonarr
-  #     - radarr

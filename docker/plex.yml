@@ -47,3 +47,12 @@ services:
     restart: unless-stopped
     depends_on:
       - plex
+  
+  plex-meta-manager:
+    image: meisnate12/plex-meta-manager
+    container_name: plex-meta-manager
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/media/appdata/plexmetamanager:/config
+    restart: unless-stopped
