@@ -6,13 +6,6 @@ services:
   plex:
     container_name: plex
     image: plexinc/pms-docker
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     restart: unless-stopped
     ports:
       - 32400:32400/tcp
