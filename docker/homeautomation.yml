@@ -16,7 +16,7 @@ services:
     image: koenkk/zigbee2mqtt
     restart: unless-stopped
     volumes:
-      - /home/media/appdata/zigbee2mqtt:/data
+      - /home/media/appdata/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
     ports:
       # Frontend port
@@ -25,7 +25,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
-    network_mode: host
 
   watchtower:
     container_name: watchtower
