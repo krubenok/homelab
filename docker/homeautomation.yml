@@ -22,11 +22,10 @@ services:
       # Frontend port
       - 8080:8080
     environment:
+      - PUID=1000
+      - PGID=1000
       - TZ=America/Los_Angeles
     network_mode: host
-    deploy:
-      restart_policy:
-        delay: 10s  # Increase the restart delay to 10 seconds
 
   watchtower:
     container_name: watchtower
