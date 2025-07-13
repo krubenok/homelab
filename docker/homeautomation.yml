@@ -21,6 +21,19 @@ services:
         - '9001:9001'
     command: 'mosquitto -c /mosquitto-no-auth.conf'
 
+  scrypted:
+    image: koush/scrypted:latest
+    container_name: scrypted
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /home/media/appdata/scrypted:/server/volume/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt
