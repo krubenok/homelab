@@ -15,6 +15,7 @@ services:
       - /home/media/appdata/sonarr:/config
       - /mnt/TV:/media/TV
       - /mnt/Scratch/Downloads:/Downloads
+      - /home/media/appdata/sonarr_temp:/run/sonarr-temp
 
   radarr:
     container_name: radarr
@@ -30,6 +31,7 @@ services:
       - /home/media/appdata/radarr:/config
       - /mnt/Movies:/media/Movies
       - /mnt/Scratch/Downloads:/Downloads
+      - /home/media/appdata/radarr_temp:/run/radarr-temp
     depends_on:
       - sabnzbd
       - jackett
