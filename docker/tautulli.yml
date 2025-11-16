@@ -1,0 +1,19 @@
+# Import statement:
+# include:
+#   - path: /mnt/FineBoi/Apps/homelab/docker/tautulli.yml
+# services: {}
+
+---
+services:
+  tautulli:
+    container_name: tautulli
+    image: linuxserver/tautulli
+    restart: unless-stopped
+    ports:
+      - 8181:8181
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /mnt/FineBoi/Apps/Tautulli:/config
