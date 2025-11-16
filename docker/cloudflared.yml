@@ -9,3 +9,8 @@ services:
     volumes:
       - /home/jarvis/homelab/cloudflared:/etc/cloudflared/
     command: "tunnel --config /etc/cloudflared/config.yml run"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+

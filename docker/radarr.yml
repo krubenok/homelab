@@ -1,0 +1,17 @@
+---
+services:
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr
+    restart: unless-stopped
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /mnt/FineBoi/Apps/Radarr/config:/config
+      - /mnt/Power/Movies:/media/Movies
+      - /mnt/FineBoi/Downloads:/Downloads
+      - /mnt/FineBoi/Apps/Radarr/radarr_temp:/run/radarr-temp

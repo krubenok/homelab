@@ -1,0 +1,17 @@
+---
+services:
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    restart: unless-stopped
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /mnt/FineBoi/Apps/Sonarr/config:/config
+      - /mnt/Power/TV:/media/TV
+      - /mnt/FineBoi/Downloads:/Downloads
+      - /mnt/FineBoi/Apps/Sonarr/sonarr_temp:/run/sonarr-temp

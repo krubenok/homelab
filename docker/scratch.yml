@@ -1,0 +1,23 @@
+tautulli:
+  container_name: tautulli
+  image: linuxserver/tautulli
+  environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=America/Los_Angeles
+  volumes:
+    - /home/media/appdata/tautulli:/config
+  ports:
+    - 8181:8181
+  restart: unless-stopped
+  depends_on:
+    - plex
+
+plex-meta-manager:
+  image: meisnate12/plex-meta-manager
+  container_name: plex-meta-manager
+  environment:
+    - TZ=America/Los_Angeles
+  volumes:
+    - /home/media/appdata/plexmetamanager:/config
+  restart: unless-stopped
