@@ -1,0 +1,29 @@
+# Import statement:
+# include:
+#   - path: /mnt/FineBoi/Apps/homelab/docker/tailscale.yml
+# services: {}
+
+---
+services:
+  tailscale-gw:
+    container_name: tailscale-gw
+    image: tailscale/tailscale:stable
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_MULLVAD_EXITNODE=${TS_MULLVAD_EXITNODE}
+    volumes:
+      - tailscale-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    command: >
+      sh -c "\
+        tailscaled --state=/var/lib/tailscale/tailscaled.state &\
+        sleep 5 &&\
+        tailscale up \
+          --authkey=${TS_AUTHKEY} \
+          --hostname=truenas-ts-gw \
+          --accept-routes=true \
+          --exit-node=${TS_MULLVAD_EXITNODE} \
+          --exit-node-allow-lan-access=true &&\
+        tail -f /dev/null"
