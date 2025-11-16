@@ -1,12 +1,7 @@
 # Import statement:
 # include:
 #   - path: /mnt/FineBoi/Apps/homelab/docker/tailscale.yml
-
-# services:
-#   tailscale-gw:
-#     environment:
-#       TS_AUTHKEY: ${TS_AUTHKEY:?set in your SCALE env/secret}
-#       TS_MULLVAD_EXITNODE: ${TS_MULLVAD_EXITNODE:?provide exit node}
+# services: {}
 
 ---
 services:
