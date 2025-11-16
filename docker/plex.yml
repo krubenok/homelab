@@ -1,3 +1,8 @@
+# Import statement:
+# include:
+#   - path: /mnt/FineBoi/Apps/homelab/docker/plex.yml
+# services: {}
+
 ---
 services:
   plex:
