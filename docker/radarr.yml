@@ -10,8 +10,6 @@ services:
     image: linuxserver/radarr
     restart: unless-stopped
     network_mode: "container:tailscale-gw"
-    ports:
-      - 7878:7878
     environment:
       - PUID=1000
       - PGID=1000

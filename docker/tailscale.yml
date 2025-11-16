@@ -21,6 +21,9 @@ services:
     cap_add:
       - net_admin
     restart: unless-stopped
+    ports:
+      - "7878:7878" # Radarr
+      - "8989:8989" # Sonarr
 
 volumes:
   tailscale-state:
