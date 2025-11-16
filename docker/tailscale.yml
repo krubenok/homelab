@@ -5,7 +5,8 @@
 
 ---
 services:
-  tailscale-nginx:
+  tailscale-gw:
+    container_name: tailscale-gw
     image: tailscale/tailscale:latest
     hostname: truenas-ts-gw
     privileged: true
