@@ -13,13 +13,14 @@ services:
     environment:
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_HOSTNAME=truenas-ts-gw
-      - TS_EXTRA_ARGS=--exit-node=100.96.176.46 --exit-node-allow-lan-access=true
+      - TS_EXTRA_ARGS=--exit-node=100.96.176.46 --exit-node-allow-lan-access=true --accept-routes=true
     volumes:
       - tailscale-state:/var/lib/tailscale
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
+      - sys_module
     restart: unless-stopped
     ports:
       - "7878:7878" # Radarr
