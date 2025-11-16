@@ -13,10 +13,11 @@ services:
     environment:
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_HOSTNAME=truenas-ts-gw
-      - TS_EXTRA_ARGS=--exit-node=100.96.176.46 --exit-node-allow-lan-access=true
+      - TS_EXTRA_ARGS=--exit-node=100.96.176.46 --exit-node-allow-lan-access=false --reset
       - TS_USERSPACE=false
     volumes:
       - tailscale-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun # Required for tailscale to work
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
