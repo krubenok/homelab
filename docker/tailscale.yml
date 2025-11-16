@@ -27,3 +27,6 @@ services:
           --exit-node=${TS_MULLVAD_EXITNODE} \
           --exit-node-allow-lan-access=true &&\
         tail -f /dev/null"
+
+volumes:
+  tailscale-state:
