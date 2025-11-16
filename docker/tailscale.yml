@@ -10,7 +10,7 @@ services:
     hostname: truenas-ts-gw
     privileged: true
     environment:
-      - TS_EXTRA_ARGS=--accept-routes=true --exit-node=us-sea-wg-001.mullvad.ts.net --exit-node-allow-lan-access=true
+      - TS_EXTRA_ARGS=--accept-routes=true --exit-node-allow-lan-access=true
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
       - tailscale-state:/var/lib/tailscale
