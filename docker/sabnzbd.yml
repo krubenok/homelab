@@ -1,0 +1,21 @@
+# Import statement:
+# include:
+#   - path: /mnt/FineBoi/Apps/homelab/docker/sabnzbd.yml
+# services: {}
+
+---
+services:
+  sabnzbd:
+    container_name: sabnzbd
+    image: linuxserver/sabnzbd
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 9090:9090
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - /mnt/FineBoi/Apps/Sabnzbd:/config
+      - /mnt/FineBoi/Downloads:/Downloads
