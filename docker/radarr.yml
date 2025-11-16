@@ -9,11 +9,13 @@ services:
     container_name: radarr
     image: linuxserver/radarr
     restart: unless-stopped
-    network_mode: "container:tailscale-gw"
+    # network_mode: "container:tailscale-gw"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
+    ports:
+      - "7878:7878" # Radarr
     volumes:
       - /mnt/FineBoi/Apps/Radarr/config:/config
       - /mnt/Power/Movies:/media/Movies

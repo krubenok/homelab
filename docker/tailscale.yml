@@ -24,9 +24,9 @@ services:
       - net_admin
       - sys_module
     restart: unless-stopped
-    ports:
-      - "7878:7878" # Radarr
-      - "8989:8989" # Sonarr
+    # ports:
+    #   - "7878:7878" # Radarr
+    #   - "8989:8989" # Sonarr
 
 volumes:
   tailscale-state:

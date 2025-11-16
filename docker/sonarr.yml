@@ -9,11 +9,13 @@ services:
     container_name: sonarr
     image: linuxserver/sonarr
     restart: unless-stopped
-    network_mode: "container:tailscale-gw"
+    # network_mode: "container:tailscale-gw"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
+    ports:
+      - "8989:8989" # Sonarr
     volumes:
       - /mnt/FineBoi/Apps/Sonarr/config:/config
       - /mnt/Power/TV:/media/TV
