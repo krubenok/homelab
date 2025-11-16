@@ -18,17 +18,10 @@ services:
     volumes:
       - tailscale-state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
-    command: >
-      sh -c "\
-        tailscaled --state=/var/lib/tailscale/tailscaled.state &\
-        sleep 5 &&\
-        tailscale up \
-          --authkey=${TS_AUTHKEY} \
-          --hostname=truenas-ts-gw \
-          --accept-routes=true \
-          --exit-node=${TS_MULLVAD_EXITNODE} \
-          --exit-node-allow-lan-access=true &&\
-        tail -f /dev/null"
+    environment:
+      - TS_HOSTNAME=truenas-ts-gw
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_EXTRA_ARGS="--accept-routes=true --exit-node=us-sea-wg-001.mullvad.ts.net --exit-node-allow-lan-access=true"
 
 volumes:
   tailscale-state:
