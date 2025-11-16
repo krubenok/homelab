@@ -14,7 +14,7 @@ services:
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_HOSTNAME=truenas-ts-gw
       - TS_EXTRA_ARGS=--exit-node=100.96.176.46 --exit-node-allow-lan-access=true
-      - TS_TAILSCALED_EXTRA_ARGS=--tun=tailscale1
+      - TS_USERSPACE=false
     volumes:
       - tailscale-state:/var/lib/tailscale
     devices:
