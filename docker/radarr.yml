@@ -9,7 +9,7 @@ services:
     container_name: radarr
     image: linuxserver/radarr
     restart: unless-stopped
-    network_mode: "service:tailscale-gw"
+    network_mode: "container:tailscale-gw"
     ports:
       - 7878:7878
     environment:
