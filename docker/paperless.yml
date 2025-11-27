@@ -1,0 +1,40 @@
+# Import statement:
+# include:
+#   - path: /mnt/FineBoi/Apps/homelab/docker/paperless.yml
+# services: {}
+# https://github.com/paperless-ngx/paperless-ngx/tree/main/docker/compose
+# https://docs.paperless-ngx.com/setup/#docker
+
+---
+services:
+  broker:
+    image: docker.io/library/redis:8
+    restart: unless-stopped
+    volumes:
+      - /mnt/FineBoi/Apps/Paperless/redisdata:/data
+  db:
+    image: docker.io/library/postgres:18
+    restart: unless-stopped
+    volumes:
+      - /mnt/FineBoi/Apps/Paperless/pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/FineBoi/Apps/Paperless/data:/usr/src/paperless/data
+      - /mnt/FineBoi/Apps/Paperless/media:/usr/src/paperless/media
+      - /mnt/FineBoi/Apps/Paperless/export:/usr/src/paperless/export
+      - /mnt/FineBoi/Apps/Paperless/consume:/usr/src/paperless/consume
+    env_file: paperless.env
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
