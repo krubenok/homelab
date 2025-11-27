@@ -17,10 +17,10 @@ services:
     restart: unless-stopped
     volumes:
       - paperless_pgdata:/var/lib/postgresql
+    env_file: /mnt/FineBoi/Apps/homelab/docker/paperless.env
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
-      POSTGRES_PASSWORD: paperless
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
@@ -34,7 +34,7 @@ services:
       - /mnt/FineBoi/Apps/Paperless/media:/usr/src/paperless/media
       - /mnt/FineBoi/Apps/Paperless/export:/usr/src/paperless/export
       - /mnt/FineBoi/Apps/Paperless/consume:/usr/src/paperless/consume
-    env_file: paperless.env
+    env_file: /mnt/FineBoi/Apps/homelab/docker/paperless.env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
