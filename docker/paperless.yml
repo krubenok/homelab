@@ -21,6 +21,7 @@ services:
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: /mnt/FineBoi/Apps/homelab/docker/paperless.pass
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
@@ -38,6 +39,7 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
+      PAPERLESS_DBPASS: /mnt/FineBoi/Apps/homelab/docker/paperless.pass
 
 volumes:
   paperless_pgdata:
