@@ -15,6 +15,11 @@ services:
       - PLEX_UID=1000
       - PLEX_GID=1000
       - ADVERTISE_IP=http://10.1.1.170:32400/
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "44" # replace with the host's video group GID (getent group video)
+      - "109" # replace with the host's render group GID (getent group render)
     volumes:
       - /mnt/FineBoi/Apps/Plex/config:/config
       - /mnt/FineBoi/Transcode:/transcode
