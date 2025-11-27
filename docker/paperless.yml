@@ -11,12 +11,12 @@ services:
     image: docker.io/library/redis:8
     restart: unless-stopped
     volumes:
-      - /mnt/FineBoi/Apps/Paperless/redisdata:/data
+      - paperless_redisdata:/data
   db:
     image: docker.io/library/postgres:18
     restart: unless-stopped
     volumes:
-      - /mnt/FineBoi/Apps/Paperless/pgdata:/var/lib/postgresql
+      - paperless_pgdata:/var/lib/postgresql
     env_file:
       - paperless.env
     environment:
@@ -39,3 +39,9 @@ services:
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
+
+volumes:
+  paperless_pgdata:
+    driver: local
+  paperless_redisdata:
+    driver: local
