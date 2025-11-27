@@ -17,10 +17,11 @@ services:
     restart: unless-stopped
     volumes:
       - /mnt/FineBoi/Apps/Paperless/pgdata:/var/lib/postgresql
+    env_file:
+      - paperless.env
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
-      POSTGRES_PASSWORD: paperless
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
