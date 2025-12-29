@@ -20,14 +20,14 @@
 ## Pools
 - Chungus: raidz2 (8x 23.6T), ~189T total, ~0% used
 - FineBoi: 2x mirror vdevs (4 disks), ~3.67T total, ~8% used
-- Power: migrated to Chungus; ready to export/retire (legacy 2x raidz2: 6x 16.4T + 6x 12.7T)
+- Power: migrated to Chungus and exported/retired (legacy 2x raidz2: 6x 16.4T + 6x 12.7T)
 - boot-pool: mirror (sds3 + sdv3), ~928G total
 
 ## Migration status
 - Media moved to /mnt/Chungus/Media/Movies and /mnt/Chungus/Media/TV
 - Files moved to /mnt/Chungus/Users/krubenok
 - TimeMachine moved to /mnt/Chungus/Backups/TimeMachine (tm + krubenok)
-- Incremental catch-up complete; Power export pending
+- Incremental catch-up complete; Power exported
 
 ## ZFS basics
 - ashift: 12 on all pools
@@ -69,6 +69,62 @@
 - Downloads: /mnt/FineBoi/Downloads
 - ix-apps mount: /mnt/.ix-apps (FineBoi/ix-apps)
 
+## Docker management (Dockge + git push deploy)
+- Dockge app dir: /mnt/FineBoi/Apps/dockge
+- Dockge stacks path: /mnt/FineBoi/Apps/homelab/docker
+- Stack layout: Dockge expects /mnt/FineBoi/Apps/homelab/docker/<stack>/compose.yaml (move/rename existing docker/*.yml)
+- After moving/renaming stacks, use Dockge "Scan Stacks Folder" to import them
+- Dockge install:
+  - mkdir -p /mnt/FineBoi/Apps/homelab/docker /mnt/FineBoi/Apps/dockge
+  - cd /mnt/FineBoi/Apps/dockge
+  - curl "https://dockge.kuma.pet/compose.yaml?port=5001&stacksPath=/mnt/FineBoi/Apps/homelab/docker" --output compose.yaml
+  - docker compose up -d
+- Dockge update:
+  - cd /mnt/FineBoi/Apps/dockge
+  - docker compose pull && docker compose up -d
+- Auto-deploy on push to main (self-contained, no external CI):
+  - Create a bare repo on the NAS (for example /mnt/FineBoi/Apps/homelab.git)
+  - Add a post-receive hook that checks out main into /mnt/FineBoi/Apps/homelab and runs docker compose up -d per stack
+  - Push from local to the NAS remote; the hook applies the update and Dockge reflects the new stack state
+  - Example post-receive hook:
+    - /mnt/FineBoi/Apps/homelab.git/hooks/post-receive
+    - chmod +x /mnt/FineBoi/Apps/homelab.git/hooks/post-receive
+    - contents:
+      ```bash
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      GIT_WORK_TREE=/mnt/FineBoi/Apps/homelab git checkout -f main
+
+      for stack_dir in /mnt/FineBoi/Apps/homelab/docker/*; do
+        [ -d "$stack_dir" ] || continue
+        docker compose -f "$stack_dir/compose.yaml" up -d
+      done
+      ```
+- API sync (no repo on NAS, uses API key):
+  - Script: scripts/truenas_sync_apps.py
+  - Uses uv inline script metadata (no manual install needed)
+  - Uses WebSocket API auth.login_ex with API key
+  - API key should have APPS_WRITE permissions
+  - Env vars: TRUENAS_HOST, TRUENAS_USER, TRUENAS_API_KEY
+  - App names are derived from docker/<name>.yml (lowercase, hyphens only)
+  - 1Password CLI secret references (op://...) via env file:
+    - Template: scripts/truenas_sync_apps.env.example
+    - Copy to scripts/truenas_sync_apps.env
+    - Run with 1Password CLI:
+      - op run --env-file scripts/truenas_sync_apps.env -- uv run --script scripts/truenas_sync_apps.py --dry-run
+  - Cloudflare Access (optional):
+    - Env vars: CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET (or CF_ACCESS_TOKEN)
+  - Example:
+    - uv run --script scripts/truenas_sync_apps.py --dry-run
+    - uv run --script scripts/truenas_sync_apps.py --delete-missing
+  - TrueNAS API key setup (UI):
+    - Create a dedicated user with only the permissions needed for Apps
+    - In the top-right user menu, open "My API Keys" (or Credentials > Users > View API Keys)
+    - Add API Key and copy it immediately; the key is shown only once
+    - API keys are user-linked and can be set to expire; they bypass 2FA
+  - Use --url to set a full websocket URL, or --insecure for self-signed TLS
+
 ## VMs
 - HomeAssistantOS: running, autostart, 2 vCPU, 2G RAM, VIRTIO disk on /dev/zvol/FineBoi/HomeAssistantOS, NIC on br1
 
@@ -87,6 +143,7 @@
 
 ## Notes
 - UI certificate/private key output was returned by midclt; avoid sharing.
+- Created local group `media` (gid 1000) and added `truenas_admin` for access to media datasets.
 
 ## Optimization plan (draft)
 - Target: keep media and backups on Chungus; apps/VMs on FineBoi.
