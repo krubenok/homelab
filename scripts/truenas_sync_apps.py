@@ -2,6 +2,7 @@
 # /// script
 # dependencies = [
 #   "websockets",
+#   "pyyaml",
 # ]
 # ///
 import argparse
@@ -12,6 +13,7 @@ import re
 import ssl
 import sys
 import inspect
+from urllib.parse import urlparse, urlunparse
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -20,6 +22,15 @@ try:
 except ImportError as exc:
     print(
         "error: missing dependency 'websockets' (run with `uv run --script`)",
+        file=sys.stderr,
+    )
+    raise SystemExit(1) from exc
+
+try:
+    import yaml
+except ImportError as exc:
+    print(
+        "error: missing dependency 'pyyaml' (run with `uv run --script`)",
         file=sys.stderr,
     )
     raise SystemExit(1) from exc
@@ -34,12 +45,12 @@ def normalize_app_name(name: str) -> str:
     return normalized
 
 
-def load_compose_files(docker_dir: Path) -> Dict[str, str]:
+def load_compose_files(docker_dir: Path, allow_empty: bool = False) -> Dict[str, str]:
     if not docker_dir.exists():
         raise FileNotFoundError(f"Compose directory not found: {docker_dir}")
 
     files = sorted(docker_dir.glob("*.yml")) + sorted(docker_dir.glob("*.yaml"))
-    if not files:
+    if not files and not allow_empty:
         raise FileNotFoundError(f"No compose files found in {docker_dir}")
 
     stacks: Dict[str, str] = {}
@@ -57,6 +68,34 @@ def build_ws_url(host: str, scheme: str, port: Optional[int]) -> str:
     if port:
         return f"{scheme}://{host}:{port}/websocket"
     return f"{scheme}://{host}/websocket"
+
+
+def normalize_ws_url(value: str) -> str:
+    parsed = urlparse(value)
+    if not parsed.scheme or not parsed.netloc:
+        raise ValueError(f"Invalid TRUENAS_HOST/URL: {value}")
+    scheme_map = {"http": "ws", "https": "wss", "ws": "ws", "wss": "wss"}
+    ws_scheme = scheme_map.get(parsed.scheme)
+    if not ws_scheme:
+        raise ValueError(f"Unsupported URL scheme: {parsed.scheme}")
+    path = parsed.path or "/websocket"
+    return urlunparse((ws_scheme, parsed.netloc, path, "", parsed.query, ""))
+
+
+def redact_secrets(obj):
+    if isinstance(obj, dict):
+        redacted = {}
+        for key, value in obj.items():
+            if isinstance(key, str) and re.search(
+                r"(pass(word)?|token|secret|key)$", key, re.IGNORECASE
+            ):
+                redacted[key] = "<redacted>"
+            else:
+                redacted[key] = redact_secrets(value)
+        return redacted
+    if isinstance(obj, list):
+        return [redact_secrets(item) for item in obj]
+    return obj
 
 
 class RpcClient:
@@ -83,7 +122,7 @@ class RpcClient:
 
 async def run(args: argparse.Namespace) -> int:
     docker_dir = Path(args.docker_dir)
-    stacks = load_compose_files(docker_dir)
+    stacks = load_compose_files(docker_dir, allow_empty=args.pull_missing)
 
     if args.url:
         ws_url = args.url
@@ -91,9 +130,13 @@ async def run(args: argparse.Namespace) -> int:
         host = args.host or os.environ.get("TRUENAS_HOST")
         if not host:
             raise ValueError("Missing --host or TRUENAS_HOST")
-        scheme = args.scheme or os.environ.get("TRUENAS_SCHEME", "wss")
-        port = args.port
-        ws_url = build_ws_url(host, scheme, port)
+        host = host.strip()
+        if "://" in host:
+            ws_url = normalize_ws_url(host)
+        else:
+            scheme = args.scheme or os.environ.get("TRUENAS_SCHEME", "wss")
+            port = args.port
+            ws_url = build_ws_url(host, scheme, port)
 
     username = args.username or os.environ.get("TRUENAS_USER")
     api_key = args.api_key or os.environ.get("TRUENAS_API_KEY")
@@ -196,6 +239,28 @@ async def run(args: argparse.Namespace) -> int:
                 )
                 print(f"updated {name}")
 
+        if args.pull_missing:
+            export_dir = Path(args.pull_dir)
+            export_dir.mkdir(parents=True, exist_ok=True)
+            for name, app in apps_by_name.items():
+                if not app.get("custom_app", False):
+                    continue
+                if name in stacks:
+                    continue
+                out_path = export_dir / f"{name}.yml"
+                if out_path.exists() and not args.pull_overwrite:
+                    continue
+                if args.dry_run:
+                    print(f"[dry-run] pull {name} -> {out_path}")
+                    continue
+                config = await rpc.call("app.config", [name])
+                if not args.pull_raw:
+                    config = redact_secrets(config)
+                yaml_text = yaml.safe_dump(config, sort_keys=False)
+                out_path.write_text(yaml_text, encoding="utf-8")
+                stacks[name] = yaml_text
+                print(f"pulled {name} -> {out_path}")
+
         if args.delete_missing:
             stack_names = set(stacks.keys())
             for name, app in apps_by_name.items():
@@ -227,6 +292,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--api-key")
     parser.add_argument("--insecure", action="store_true", help="Skip TLS verification")
     parser.add_argument("--delete-missing", action="store_true")
+    parser.add_argument("--pull-missing", action="store_true")
+    parser.add_argument("--pull-overwrite", action="store_true")
+    parser.add_argument("--pull-raw", action="store_true")
+    parser.add_argument("--pull-dir", default="docker")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 

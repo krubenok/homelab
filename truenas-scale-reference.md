@@ -118,6 +118,12 @@
   - Example:
     - uv run --script scripts/truenas_sync_apps.py --dry-run
     - uv run --script scripts/truenas_sync_apps.py --delete-missing
+    - uv run --script scripts/truenas_sync_apps.py --pull-missing
+    - uv run --script scripts/truenas_sync_apps.py --pull-missing --pull-raw
+  - Pulling from TrueNAS:
+    - Uses app.config to write docker/<app>.yml for custom apps missing locally
+    - Redacts likely secrets by default; use --pull-raw to keep values
+    - Use --pull-overwrite to replace existing files, --pull-dir to change output
   - TrueNAS API key setup (UI):
     - Create a dedicated user with only the permissions needed for Apps
     - In the top-right user menu, open "My API Keys" (or Credentials > Users > View API Keys)
