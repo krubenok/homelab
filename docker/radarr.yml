@@ -18,6 +18,6 @@ services:
       - "7878:7878" # Radarr
     volumes:
       - /mnt/FineBoi/Apps/Radarr/config:/config
-      - /mnt/Power/Movies:/media/Movies
+      - /mnt/Chungus/Media/Movies:/media/Movies
       - /mnt/FineBoi/Downloads:/Downloads
       - /mnt/FineBoi/Apps/Radarr/radarr_temp:/run/radarr-temp

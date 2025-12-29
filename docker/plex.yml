@@ -23,6 +23,6 @@ services:
     volumes:
       - /mnt/FineBoi/Apps/Plex/config:/config
       - /mnt/FineBoi/Transcode:/transcode
-      - /mnt/Power/TV:/media/TV
-      - /mnt/Power/Movies:/media/Movies
+      - /mnt/Chungus/Media/TV:/media/TV
+      - /mnt/Chungus/Media/Movies:/media/Movies
       - /mnt/FineBoi/Apps/Plex/Plex-DB-Backups:/database-backups

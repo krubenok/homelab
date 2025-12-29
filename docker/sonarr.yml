@@ -18,6 +18,6 @@ services:
       - "8989:8989" # Sonarr
     volumes:
       - /mnt/FineBoi/Apps/Sonarr/config:/config
-      - /mnt/Power/TV:/media/TV
+      - /mnt/Chungus/Media/TV:/media/TV
       - /mnt/FineBoi/Downloads:/Downloads
       - /mnt/FineBoi/Apps/Sonarr/sonarr_temp:/run/sonarr-temp
