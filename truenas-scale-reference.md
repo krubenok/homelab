@@ -2,6 +2,13 @@
 
 ## Access
 - SSH: ssh truenas_admin@10.1.1.3
+- Automation user: apps_automation (API-only, no SSH/shell, password disabled)
+- API auth: apps_automation API key stored in 1Password and injected via op run
+- RBAC: privilege apps_automation_priv with role APPS_WRITE assigned to apps_automation group (gid 3000); removed from truenas_readonly_administrators
+- Cloudflare Access:
+  - UI: truenas.rubenok.ca (browser-only)
+  - API: truenas-api.rubenok.ca (service token with CF Access headers)
+  - Tunnel origin uses HTTPS to TrueNAS; origin cert verification disabled due to self-signed cert
 
 ## System
 - TrueNAS: 25.10.0.1
@@ -68,6 +75,7 @@
 - Media: /mnt/Chungus/Media/Movies, /mnt/Chungus/Media/TV
 - Downloads: /mnt/FineBoi/Downloads
 - ix-apps mount: /mnt/.ix-apps (FineBoi/ix-apps)
+- cloudflared: managed tunnel, token injected via CLOUDFLARED_TUNNEL_TOKEN in compose
 
 ## Docker management (Dockge + git push deploy)
 - Dockge app dir: /mnt/FineBoi/Apps/dockge
