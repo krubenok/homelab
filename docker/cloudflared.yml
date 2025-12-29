@@ -6,11 +6,10 @@ services:
     # Restart on crashes and on reboots
     restart: unless-stopped
     image: cloudflare/cloudflared:latest
-    volumes:
-      - /home/jarvis/homelab/cloudflared:/etc/cloudflared/
-    command: "tunnel --config /etc/cloudflared/config.yml run"
+    command: "tunnel --no-autoupdate run"
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARED_TUNNEL_TOKEN}
     logging:
       options:
         max-size: "10m"
         max-file: "3"
-

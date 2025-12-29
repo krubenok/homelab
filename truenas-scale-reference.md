@@ -115,6 +115,10 @@
       - op run --env-file scripts/truenas_sync_apps.env -- uv run --script scripts/truenas_sync_apps.py --dry-run
   - Cloudflare Access (optional):
     - Env vars: CF_ACCESS_CLIENT_ID, CF_ACCESS_CLIENT_SECRET (or CF_ACCESS_TOKEN)
+  - Compose env expansion:
+    - ${VAR} and ${VAR:-default} are expanded locally before sync
+    - Use --no-expand-env to keep placeholders, --expand-env-strict to fail on missing vars
+    - Store app secrets in the env file (e.g., CLOUDFLARED_TUNNEL_TOKEN)
   - Example:
     - uv run --script scripts/truenas_sync_apps.py --dry-run
     - uv run --script scripts/truenas_sync_apps.py --delete-missing

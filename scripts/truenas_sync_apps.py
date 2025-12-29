@@ -37,6 +37,7 @@ except ImportError as exc:
 
 
 APP_NAME_RE = re.compile(r"^[a-z]([-a-z0-9]*[a-z0-9])?$")
+ENV_VAR_RE = re.compile(r"\$\$|\$\{[^}]*\}|\$[A-Za-z_][A-Za-z0-9_]*")
 
 
 def normalize_app_name(name: str) -> str:
@@ -98,6 +99,56 @@ def redact_secrets(obj):
     return obj
 
 
+def _resolve_var(name: str, env: Dict[str, str], strict: bool, missing: set) -> str:
+    if name in env:
+        return env[name]
+    missing.add(name)
+    if strict:
+        raise ValueError(f"Missing env var: {name}")
+    return ""
+
+
+def _resolve_expr(expr: str, env: Dict[str, str], strict: bool, missing: set) -> str:
+    for op in (":-", "-", ":?", "?"):
+        if op in expr:
+            var, default = expr.split(op, 1)
+            var = var.strip()
+            if op == ":-":
+                value = env.get(var)
+                if value:
+                    return value
+                return default
+            if op == "-":
+                if var in env:
+                    return env[var]
+                return default
+            if op == ":?":
+                value = env.get(var)
+                if value:
+                    return value
+                raise ValueError(default or f"Missing required env var: {var}")
+            if op == "?":
+                if var in env:
+                    return env[var]
+                raise ValueError(default or f"Missing required env var: {var}")
+    return _resolve_var(expr.strip(), env, strict, missing)
+
+
+def expand_env_vars(text: str, env: Dict[str, str], strict: bool) -> tuple[str, set]:
+    missing: set[str] = set()
+
+    def replace(match: re.Match) -> str:
+        token = match.group(0)
+        if token == "$$":
+            return "$"
+        if token.startswith("${"):
+            expr = token[2:-1]
+            return _resolve_expr(expr, env, strict, missing)
+        return _resolve_var(token[1:], env, strict, missing)
+
+    return ENV_VAR_RE.sub(replace, text), missing
+
+
 class RpcClient:
     def __init__(self, ws):
         self._ws = ws
@@ -123,6 +174,20 @@ class RpcClient:
 async def run(args: argparse.Namespace) -> int:
     docker_dir = Path(args.docker_dir)
     stacks = load_compose_files(docker_dir, allow_empty=args.pull_missing)
+    if args.expand_env:
+        missing_vars: set[str] = set()
+        for name, compose in stacks.items():
+            expanded, missing = expand_env_vars(
+                compose, dict(os.environ), args.expand_env_strict
+            )
+            stacks[name] = expanded
+            missing_vars.update(missing)
+        if missing_vars and not args.expand_env_strict:
+            missing_list = ", ".join(sorted(missing_vars))
+            print(
+                f"warning: missing env vars expanded to empty strings: {missing_list}",
+                file=sys.stderr,
+            )
 
     if args.url:
         ws_url = args.url
@@ -297,6 +362,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pull-raw", action="store_true")
     parser.add_argument("--pull-dir", default="docker")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--expand-env",
+        dest="expand_env",
+        action="store_true",
+        help="Expand environment variables in compose files (default).",
+    )
+    parser.add_argument(
+        "--no-expand-env",
+        dest="expand_env",
+        action="store_false",
+        help="Disable environment variable expansion.",
+    )
+    parser.add_argument(
+        "--expand-env-strict",
+        action="store_true",
+        help="Fail if required env vars are missing during expansion.",
+    )
+    parser.set_defaults(expand_env=True)
     return parser.parse_args()
 
 
