@@ -163,6 +163,18 @@
 - UI certificate/private key output was returned by midclt; avoid sharing.
 - Created local group `media` (gid 1000) and added `truenas_admin` for access to media datasets.
 
+## Fan control (ASUS WS-680)
+- Loaded modules: `asus_wmi_sensors`, `nct6775` (exposes nct6798 hwmon).
+- Fan RPMs: `/sys/class/hwmon/hwmon18/fan*_input` (nct6798-isa-0290 in `sensors`).
+- PWM control: `/sys/class/hwmon/hwmon18/pwm{1,2,3,4,7}` with `pwm*_enable` (manual = 1).
+- PWM to location mapping (stop tests):
+  - pwm1: front-left chassis fan
+  - pwm2: front-center chassis fan
+  - pwm3: rear-center chassis fan
+  - pwm4: rear-left chassis fan
+  - pwm7: front-right chassis fan
+- CPU_FAN tach: `fan2`; tach inputs do not map 1:1 to PWM channels.
+
 ## Optimization plan (draft)
 - Target: keep media and backups on Chungus; apps/VMs on FineBoi.
 - Special vdev: add a mirrored special metadata vdev to Chungus using two reliable SSDs (prefer PLP). This speeds up Plex/arr scans, directory listing, and small-file metadata operations.
