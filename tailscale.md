@@ -52,6 +52,13 @@
 - Funnel: no config
 - App connector: not a connector
 
+## Exit node + DNS troubleshooting
+- Diagnostic script: `./scripts/tailscale-exitnode-dns-diag.sh <run-name>` writes `tmp/tailscale-exitnode-dns-diag-<run-name>.txt` for comparing exit nodes.
+- With Mullvad exit nodes, ensure tailnet DNS resolvers use Tailscale IPs or MagicDNS names for your DNS server (not LAN-only IPs).
+- If resolvers are LAN IPs (e.g., 10.1.1.2), either enable "Allow LAN access" when using the exit node or advertise/accept the LAN subnet route.
+- Check the diag output for `tailscale dns status` (resolver list), `route -n get default` (default route via Tailscale), and resolver tests (ping/nc/dig).
+- IPv6 resolver checks use `ping6` and `route -n get -inet6` on macOS.
+
 ## Related repo config
 - `docker/tailscale-gw.yml` defines a separate TrueNAS gateway container (not this Mac).
 
