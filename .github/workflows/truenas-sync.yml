@@ -10,6 +10,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    environment: Configure TrueNAS Server
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,16 +24,12 @@ jobs:
             **/pyproject.toml
             **/uv.lock
 
-      - name: Configure 1Password service account
-        uses: 1password/load-secrets-action/configure@v3
-        with:
-          service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-
       - name: Load 1Password secrets
         uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           TRUENAS_HOST: "op://Private/TrueNAS Scale Apps Automation/hostname"
           TRUENAS_USER: "op://Private/TrueNAS Scale Apps Automation/username"
           TRUENAS_API_KEY: "op://Private/TrueNAS Scale Apps Automation/credential"
