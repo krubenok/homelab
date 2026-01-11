@@ -1,0 +1,46 @@
+name: Sync TrueNAS Apps
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/uv.lock
+
+      - name: Configure 1Password service account
+        uses: 1password/load-secrets-action/configure@v3
+        with:
+          service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Load 1Password secrets
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: true
+        env:
+          TRUENAS_HOST: "op://Private/TrueNAS Scale Apps Automation/hostname"
+          TRUENAS_USER: "op://Private/TrueNAS Scale Apps Automation/username"
+          TRUENAS_API_KEY: "op://Private/TrueNAS Scale Apps Automation/credential"
+          CF_ACCESS_CLIENT_ID: "op://Private/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client ID"
+          CF_ACCESS_CLIENT_SECRET: "op://Private/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client secret"
+          CLOUDFLARED_TUNNEL_TOKEN: "op://Private/CloudFlare Tunnel TrueNAS Scale/credential"
+
+      - name: Sync apps
+        run: |
+          uv sync
+          uv run scripts/truenas_sync_apps.py
