@@ -1,0 +1,10 @@
+[project]
+name = "homelab"
+version = "0.1.0"
+description = "Documentation and tooling for my homelab setup"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = ["pyyaml>=6.0.3", "websockets>=16.0"]
+
+[dependency-groups]
+dev = ["ruff>=0.14.11", "ty>=0.0.11"]

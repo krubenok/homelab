@@ -5,17 +5,19 @@
 #   "pyyaml",
 # ]
 # ///
+from __future__ import annotations
+
 import argparse
 import asyncio
+import inspect
 import json
 import os
 import re
 import ssl
 import sys
-import inspect
-from urllib.parse import urlparse, urlunparse
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Optional
+from urllib.parse import urlparse, urlunparse
 
 try:
     import websockets
@@ -35,7 +37,6 @@ except ImportError as exc:
     )
     raise SystemExit(1) from exc
 
-
 APP_NAME_RE = re.compile(r"^[a-z]([-a-z0-9]*[a-z0-9])?$")
 ENV_VAR_RE = re.compile(r"\$\$|\$\{[^}]*\}|\$[A-Za-z_][A-Za-z0-9_]*")
 
@@ -46,7 +47,7 @@ def normalize_app_name(name: str) -> str:
     return normalized
 
 
-def load_compose_files(docker_dir: Path, allow_empty: bool = False) -> Dict[str, str]:
+def load_compose_files(docker_dir: Path, allow_empty: bool = False) -> dict[str, str]:
     if not docker_dir.exists():
         raise FileNotFoundError(f"Compose directory not found: {docker_dir}")
 
@@ -54,12 +55,12 @@ def load_compose_files(docker_dir: Path, allow_empty: bool = False) -> Dict[str,
     if not files and not allow_empty:
         raise FileNotFoundError(f"No compose files found in {docker_dir}")
 
-    stacks: Dict[str, str] = {}
+    stacks: dict[str, str] = {}
     for path in files:
         name = normalize_app_name(path.stem)
         if not APP_NAME_RE.match(name):
             raise ValueError(f"Invalid app name from {path.name}: {name}")
-        stacks[name] = path.read_text()
+        stacks[name] = path.read_text(encoding="utf-8")
     return stacks
 
 
@@ -83,7 +84,7 @@ def normalize_ws_url(value: str) -> str:
     return urlunparse((ws_scheme, parsed.netloc, path, "", parsed.query, ""))
 
 
-def redact_secrets(obj):
+def redact_secrets(obj: Any) -> Any:
     if isinstance(obj, dict):
         redacted = {}
         for key, value in obj.items():
@@ -99,7 +100,9 @@ def redact_secrets(obj):
     return obj
 
 
-def _resolve_var(name: str, env: Dict[str, str], strict: bool, missing: set) -> str:
+def _resolve_var(
+    name: str, env: dict[str, str], strict: bool, missing: set[str]
+) -> str:
     if name in env:
         return env[name]
     missing.add(name)
@@ -108,7 +111,9 @@ def _resolve_var(name: str, env: Dict[str, str], strict: bool, missing: set) -> 
     return ""
 
 
-def _resolve_expr(expr: str, env: Dict[str, str], strict: bool, missing: set) -> str:
+def _resolve_expr(
+    expr: str, env: dict[str, str], strict: bool, missing: set[str]
+) -> str:
     for op in (":-", "-", ":?", "?"):
         if op in expr:
             var, default = expr.split(op, 1)
@@ -134,7 +139,9 @@ def _resolve_expr(expr: str, env: Dict[str, str], strict: bool, missing: set) ->
     return _resolve_var(expr.strip(), env, strict, missing)
 
 
-def expand_env_vars(text: str, env: Dict[str, str], strict: bool) -> tuple[str, set]:
+def expand_env_vars(
+    text: str, env: dict[str, str], strict: bool
+) -> tuple[str, set[str]]:
     missing: set[str] = set()
 
     def replace(match: re.Match) -> str:
@@ -150,11 +157,11 @@ def expand_env_vars(text: str, env: Dict[str, str], strict: bool) -> tuple[str, 
 
 
 class RpcClient:
-    def __init__(self, ws):
+    def __init__(self, ws: Any) -> None:
         self._ws = ws
         self._next_id = 1
 
-    async def call(self, method: str, params=None):
+    async def call(self, method: str, params: list[Any] | None = None) -> Any:
         if params is None:
             params = []
         req_id = self._next_id
@@ -175,11 +182,10 @@ async def run(args: argparse.Namespace) -> int:
     docker_dir = Path(args.docker_dir)
     stacks = load_compose_files(docker_dir, allow_empty=args.pull_missing)
     if args.expand_env:
+        env = dict(os.environ)
         missing_vars: set[str] = set()
         for name, compose in stacks.items():
-            expanded, missing = expand_env_vars(
-                compose, dict(os.environ), args.expand_env_strict
-            )
+            expanded, missing = expand_env_vars(compose, env, args.expand_env_strict)
             stacks[name] = expanded
             missing_vars.update(missing)
         if missing_vars and not args.expand_env_strict:
@@ -215,12 +221,14 @@ async def run(args: argparse.Namespace) -> int:
         else:
             ssl_ctx = ssl.create_default_context()
 
-    headers = {}
+    headers: dict[str, str] = {}
     cf_access_token = os.environ.get("CF_ACCESS_TOKEN")
     cf_access_client_id = os.environ.get("CF_ACCESS_CLIENT_ID")
     cf_access_client_secret = os.environ.get("CF_ACCESS_CLIENT_SECRET")
     if cf_access_client_id:
-        cf_access_client_id = cf_access_client_id.replace("CF-Access-Client-Id:", "").strip()
+        cf_access_client_id = cf_access_client_id.replace(
+            "CF-Access-Client-Id:", ""
+        ).strip()
     if cf_access_client_secret:
         cf_access_client_secret = cf_access_client_secret.replace(
             "CF-Access-Client-Secret:", ""
@@ -235,14 +243,14 @@ async def run(args: argparse.Namespace) -> int:
         headers["CF-Access-Client-Id"] = cf_access_client_id
         headers["CF-Access-Client-Secret"] = cf_access_client_secret
 
-    connect_kwargs = {
+    connect_kwargs: dict[str, Any] = {
         "ssl": ssl_ctx,
         "max_size": 10 * 1024 * 1024,
     }
     if headers:
         try:
             params = inspect.signature(websockets.connect).parameters
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             params = {}
         if "additional_headers" in params:
             connect_kwargs["additional_headers"] = headers
