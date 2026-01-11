@@ -23,6 +23,8 @@ jobs:
           cache-dependency-glob: |
             **/pyproject.toml
             **/uv.lock
+          prune-cache: true
+          cache-suffix: "truenas-sync-v1"
 
       - name: Load 1Password secrets
         uses: 1password/load-secrets-action@v3
@@ -39,5 +41,5 @@ jobs:
 
       - name: Sync apps
         run: |
-          uv sync
+          uv sync --frozen --no-dev
           uv run scripts/truenas_sync_apps.py
