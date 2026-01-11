@@ -30,12 +30,12 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          TRUENAS_HOST: "op://Private/TrueNAS Scale Apps Automation/hostname"
-          TRUENAS_USER: "op://Private/TrueNAS Scale Apps Automation/username"
-          TRUENAS_API_KEY: "op://Private/TrueNAS Scale Apps Automation/credential"
-          CF_ACCESS_CLIENT_ID: "op://Private/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client ID"
-          CF_ACCESS_CLIENT_SECRET: "op://Private/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client secret"
-          CLOUDFLARED_TUNNEL_TOKEN: "op://Private/CloudFlare Tunnel TrueNAS Scale/credential"
+          TRUENAS_HOST: "op://Service Tokens/TrueNAS Scale Apps Automation/hostname"
+          TRUENAS_USER: "op://Service Tokens/TrueNAS Scale Apps Automation/username"
+          TRUENAS_API_KEY: "op://Service Tokens/TrueNAS Scale Apps Automation/credential"
+          CF_ACCESS_CLIENT_ID: "op://Service Tokens/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client ID"
+          CF_ACCESS_CLIENT_SECRET: "op://Service Tokens/TrueNAS Scale Apps Automation/cloudflare tunnel service token/Header and client secret"
+          CLOUDFLARED_TUNNEL_TOKEN: "op://Service Tokens/CloudFlare Tunnel TrueNAS Scale/credential"
 
       - name: Sync apps
         run: |
