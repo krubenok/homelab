@@ -1,0 +1,83 @@
+set_bridge:
+  fields:
+    device_id:
+      example: 11223344556677889900aabbccddeeff
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
+    bridge_id:
+      example: 001788FFFE000000
+      required: true
+      selector:
+        text:
+    bridge_username:
+      example: abcdefghijklmnopqrstuvwxyz1234567890ABCD
+      required: true
+      selector:
+        text:
+    bridge_clientkey:
+      example: 00112233445566778899AABBCCDDEEFF
+      required: true
+      selector:
+        text:
+
+set_sync_state:
+  fields:
+    device_id:
+      example: 11223344556677889900aabbccddeeff
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
+    power:
+      example: true
+      selector:
+        boolean:
+    sync:
+      example: true
+      selector:
+        boolean:
+    brightness:
+      example: 42
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          mode: slider
+    intensity:
+      example: high
+      selector:
+        select:
+          translation_key: "intensities"
+          options:
+            - subtle
+            - moderate
+            - high
+            - intense
+    mode:
+      example: video
+      selector:
+        select:
+          translation_key: modes
+          options:
+            - video
+            - music
+            - game
+    input:
+      example: input1
+      selector:
+        select:
+          translation_key: "inputs"
+          options:
+            - input1
+            - input2
+            - input3
+            - input4
+    entertainment_area:
+      example: TV Area
+      selector:
+        text:

@@ -1,0 +1,53 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+media_player:
+  - platform: universal
+    unique_id: sync_box
+    name: Hue Sync Box
+    device_class: receiver
+    attributes:
+      state: switch.sync_box_power
+      source: select.sync_box_hdmi_input
+      source_list: select.sync_box_hdmi_input|options
+    commands:
+      turn_on:
+        service: switch.turn_on
+        target:
+          entity_id: switch.sync_box_power
+      turn_off:
+        service: switch.turn_off
+        target:
+          entity_id: switch.sync_box_power
+      select_source:
+        service: select.select_option
+        target:
+          entity_id: select.sync_box_hdmi_input
+        data:
+          option: "{{ source }}"
+
+sensor:
+  - platform: time_date
+    display_options:
+      - "time"
+
+template:
+  - sensor:
+      - name: "Alarm set"
+        state: "{{ states('input_boolean.alarm_set') }}"
+  - sensor:
+      - name: "Alarm Time"
+        state: "{{ state_attr('input_datetime.alarm_time', 'timestamp') | as_local | timestamp_custom('%H:%M') }}"
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.16.6.2
+    - 10.1.1.3
