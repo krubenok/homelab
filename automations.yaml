@@ -1,0 +1,149 @@
+- id: '1729912097974'
+  alias: Wake Up
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: sensor.time
+  conditions:
+  - condition: template
+    value_template: '{% set alarm = as_datetime(states(''input_datetime.alarm_time''))
+      %} {{ alarm is not none and (alarm - timedelta(minutes=15)).strftime(''%Y-%m-%d
+      %H:%M'') == now().strftime(''%Y-%m-%d %H:%M'') }}
+
+      '
+  - condition: zone
+    entity_id: device_tracker.thor_odinson_15_pro_2
+    zone: zone.home
+  - condition: state
+    entity_id: sensor.alarm_set
+    state: 'on'
+  actions:
+  - action: switch.turn_on
+    metadata: {}
+    target:
+      entity_id: switch.espresso_machine
+    data: {}
+  - alias: Fade Bedroom Lights On 15 Min
+    action: light.turn_on
+    data:
+      transition: 900
+      kelvin: 3490
+      brightness_pct: 50
+    target:
+      device_id:
+      - 4a971e3def5c346ed7031bce7ae0ad92
+      - d0968608960146acf5f1f147fc33d8ab
+      - 06d874cdb22bd24188a9e1e3990b0c2e
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - device_id: 362774af89bbde1467817fb41e740a4e
+    domain: cover
+    entity_id: 43922daeee1c280aefd615726d07db52
+    type: open
+  mode: single
+- id: '1751838248413'
+  alias: Close shades while gone
+  description: ''
+  triggers:
+  - trigger: zone
+    entity_id: person.kyle_rubenok
+    zone: zone.home
+    event: leave
+  conditions:
+  - condition: sun
+    before: sunset
+    after: sunrise
+  actions:
+  - action: cover.close_cover
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - 7eb357a23a2feaf990b19575b9142083
+      - c292dd19621f7ea2013d6ab381e9c1bf
+      - 5635cd0fc639d5d255c5ef5cd9738007
+      - d741c6c117528cb1b941904a59f682a7
+      - bcd5097e161334a289b4522b89b404d1
+      - 362774af89bbde1467817fb41e740a4e
+  mode: single
+- id: '1751839768900'
+  alias: Vacuum Main Floor
+  description: ''
+  triggers:
+  - trigger: time
+    at: 09:30:00
+  conditions:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: device_tracker.thor_odinson_15_pro_2
+      zone: zone.home
+  actions:
+  - action: vacuum.start
+    metadata: {}
+    target:
+      entity_id: vacuum.main_floor_vacuum
+    data: {}
+  mode: single
+- id: '1755497819171'
+  alias: Vacuum Upstairs
+  description: ''
+  triggers:
+  - trigger: time
+    at: '13:30:00'
+  conditions:
+  - condition: not
+    conditions:
+    - condition: zone
+      entity_id: device_tracker.thor_odinson_15_pro_2
+      zone: zone.home
+  actions:
+  - device_id: f789ded7ac075a1eae4bd5ac12cb5502
+    domain: vacuum
+    entity_id: 914e043c44bc215de2a957e1c8ceca15
+    type: clean
+  - action: notify.notify
+    metadata: {}
+    data:
+      title: Vacuuming Upstairs
+      message: 'The Roomba is getting to work. '
+  mode: single
+- id: '1770178051638'
+  alias: Turn off Espresso Machine when I leave Home
+  description: ''
+  triggers:
+  - trigger: zone
+    entity_id: device_tracker.thor_odinson_15_pro_2
+    zone: zone.home
+    event: leave
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: bc830f143fe53356948ad1dcd4bb26d5
+    entity_id: 31bbf5e5c37d960eee3c36830726ead8
+    domain: switch
+  mode: single
+- id: '1770257343515'
+  alias: Turn off Espresso Machine at 2:30 PM
+  description: ''
+  triggers:
+  - trigger: time
+    at: '14:30:00'
+    weekday:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: bc830f143fe53356948ad1dcd4bb26d5
+    entity_id: 31bbf5e5c37d960eee3c36830726ead8
+    domain: switch
+  mode: single
