@@ -1,2 +1,4 @@
 *.env
 tmp/*
+homeassistant/backups/
+homeassistant/zigbee2mqtt/configuration.yaml
