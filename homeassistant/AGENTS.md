@@ -62,3 +62,15 @@
 - Keep at least one backup off the HA VM (for example, download the `bb5cf38c` backup tar to this repo’s ignored `homeassistant/backups/` directory or to TrueNAS).
 - Script helper (downloads `/backup/<slug>.tar` via scp):
   - `scripts/ha_fetch_backup.sh 10.1.1.16 bb5cf38c`
+
+## Follow-up incident (2026-02-07)
+- Starting `core_git_pull` again caused another destructive clone into `/config` when it decided the repo "doesn't exist".
+- Add-on logs showed additional failure mode inside the add-on container:
+  - `fatal: detected dubious ownership in repository at '/config'`
+- Recovery:
+  - Restored backup `bb5cf38c` via `ha backups restore bb5cf38c --homeassistant`.
+  - Verified restored `.storage` contains `auth`, `core.config`, registries, etc.
+- Safer deployment outcome:
+  - Keep `core_git_pull` installed but stopped (manual boot).
+  - Use SSH-driven git deployment instead (works reliably on-host):
+    - helper: `scripts/ha_deploy_homeassistant_vm.sh 10.1.1.16 u-kyrubeno-ha-config`
