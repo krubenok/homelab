@@ -1,4 +1,4 @@
 *.env
 tmp/*
-homeassistant/backups/
-homeassistant/zigbee2mqtt/configuration.yaml
+.DS_Store
+._*
