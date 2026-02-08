@@ -3,6 +3,14 @@ name: Sync TrueNAS Apps
 on:
   push:
     branches: [main]
+    paths:
+      # Inputs that can change the composed config pushed to TrueNAS
+      - docker/**
+      # Sync logic and its pinned deps (uv sync --frozen uses these)
+      - scripts/truenas_sync_apps.py
+      - pyproject.toml
+      - uv.lock
+  workflow_dispatch:
 
 permissions:
   contents: read

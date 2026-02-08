@@ -37,7 +37,7 @@ uv run scripts/truenas_sync_apps.py --help
 Workspace settings in `.vscode/settings.json` are set up for Ruff. Install the Ruff VS Code extension to get formatting and linting on save.
 
 ## CI: TrueNAS app sync
-GitHub Actions syncs TrueNAS custom apps on every push to `main`.
+GitHub Actions syncs TrueNAS custom apps on pushes to `main` that change the compose files under `docker/` (or the sync script/dependencies). You can also run it manually via `workflow_dispatch`.
 
 ### Required GitHub secret
 - `OP_SERVICE_ACCOUNT_TOKEN`: 1Password service account token with access to the referenced items.
