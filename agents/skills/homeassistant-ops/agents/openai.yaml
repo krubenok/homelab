@@ -1,0 +1,4 @@
+interface:
+  display_name: "Home Assistant Ops"
+  short_description: "Home Assistant OS ops playbooks"
+  default_prompt: "Use $homeassistant-ops to operate and recover a Home Assistant OS instance safely."
